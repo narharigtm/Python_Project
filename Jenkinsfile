@@ -1,41 +1,27 @@
 pipeline {
     agent any
-    
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')
-        PYTHON_IMAGE = 'spygram/python-image'
-        IMAGE_TAG = 'latest'
-    }
-    
-    stages {
-        stage("SCM") {
-            steps {
-                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/narharigtm/Python_Project.git']])
-            }
-        }
-        
-        stage("Build PythonApp") {
-            steps {
-                script {
-			sh 'docker compose up -d --build'
-		}
-            }
-        }
-        
-        stage("Push Python Image") {
-            steps {
-                script {
-                    docker.withRegistry('', 'dockerhub-credentials-id') {
-                        sh 'docker push $PYTHON_IMAGE:$IMAGE_TAG'
-                    }
-                }
-            }
-        }
-    }    
 
+    stages {
+        stage('Clone') {
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/narharigtm/PhpMysql_project.git']])
+            }
+        }
+        stage('build & run'){
+            steps{
+                sh 'docker-compose up -d'
+                sh 'docker ps'
+            }
+        }
+    }
     post {
-        always {
-            cleanWs()
+        success {
+            echo 'Pipeline succeeded!'
+            sh 'docker-compose down'
+        }
+        failure {
+            echo 'Pipeline failed!'
+            sh 'docker-compose down'
         }
     }
 }
