@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage("SCM") {
             steps {
-                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Spygram/mypythonrepo.git']])
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/narharigtm/Python_Project.git']])
             }
         }
         
